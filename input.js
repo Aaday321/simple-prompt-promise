@@ -62,7 +62,7 @@ function validateArgumentTypes({ prompt, validation, range, canCancel }){
     if(typeof validation !== 'function' && validation != null)
         return new Error('Type error: validation function must be of type function');
     if(!Array.isArray(range) && range != null)
-        return new Error('Type error: range must be of type array');
+        return new Error('Type error: range must be an array');
     if(typeof canCancel !== 'boolean' && canCancel != null)
         return new Error('Type error: canCancel must be of type boolean');
 }
