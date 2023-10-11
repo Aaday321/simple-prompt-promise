@@ -1,6 +1,6 @@
 const readline = require('readline');
 
-const getInputWithPrompt = prompt => {
+function getInputWithPrompt(prompt) {
     if(!prompt) prompt = '$';
     const rl = readline.createInterface({
         input: process.stdin,
@@ -14,7 +14,7 @@ const getInputWithPrompt = prompt => {
     });
 };
 
-const getNumberWithPrompt = async(prompt, validation)=>{
+async function getNumberWithPrompt(prompt, validation){
     const options = typeof prompt === "object" ? prompt : null;
     if(options){
         const { range, canCancel, validation } = options;
@@ -24,7 +24,7 @@ const getNumberWithPrompt = async(prompt, validation)=>{
 }
 
 
-const getNumberWithPromptCore = async (prompt, range, canCancel, validation) => {
+async function getNumberWithPromptCore (prompt, range, canCancel, validation){
     canCancel = !(canCancel === false) || true;
     let input = "";
     let valid = false;
@@ -66,7 +66,7 @@ function validateRange(range){
 }
 
 //TODO: Refactor this code so that there is more customization for the consumer
-const getBooleanWithPrompt = async (prompt, arr) => {
+async function getBooleanWithPrompt (prompt, arr) {
     let input = await getInputWithPrompt(prompt);
     input = input.toLowerCase();
     const acceptableYes = ['y','yes', 'true', ...arr];
