@@ -35,15 +35,17 @@ const getNumberWithPromptCore = async (prompt, range, canCancel, validation) => 
 
         //Validation check
         if(!isNaN(Number(input))){ //if input is a number
+            valid = true;
             if(typeof validation === "function"){
+                valid = false;
                 const result = validation(Number(input));
                 if(result === true) valid = true;
                 else if(typeof result === 'string') failedMsg = result;
             }
             if(valid && range) {
+                valid = false;
                 validateRange(range);
                 if(!(input < range[0] || input > range[1])) valid = true;
-                else valid = false;
                 failedMsg = `Sorry, that's not a valid number in the range ${range[0]}-${range[1]}`;
             }
         }
