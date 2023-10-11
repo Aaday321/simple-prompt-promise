@@ -65,6 +65,7 @@ function validateRange(range){
     else return true;
 }
 
+//TODO: Refactor this code so that there is more customization for the consumer
 const getBooleanWithPrompt = async (prompt, arr) => {
     let input = await getInputWithPrompt(prompt);
     input = input.toLowerCase();
