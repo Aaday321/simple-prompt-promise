@@ -57,13 +57,13 @@ async function getNumberWithPromptCore (options){
 }
 
 function validateArgumentTypes({ prompt, validation, range, canCancel }){
-    if(typeof prompt !== 'string' && prompt !== undefined)
+    if(typeof prompt !== 'string' && prompt != null)
         return new Error('Type error: prompt must be of type string');
-    if(typeof validation !== 'function' && validation !== undefined)
+    if(typeof validation !== 'function' && validation != null)
         return new Error('Type error: validation function must be of type function');
-    if(!Array.isArray(range) && range !== undefined)
+    if(!Array.isArray(range) && range != null)
         return new Error('Type error: range must be of type array');
-    if(typeof canCancel !== 'boolean' && canCancel !== undefined)
+    if(typeof canCancel !== 'boolean' && canCancel != null)
         return new Error('Type error: canCancel must be of type boolean');
 }
 
