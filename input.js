@@ -17,15 +17,15 @@ function getInputWithPrompt(prompt) {
 async function getNumberWithPrompt(prompt, validation){
     const options = typeof prompt === "object" ? prompt : null;
     if(options){
-        const { range, canCancel, validation } = options;
-        return await getNumberWithPromptCore(options.prompt, range, canCancel, validation);
+        return await getNumberWithPromptCore(options);
     }
-    return await getNumberWithPromptCore(prompt, null, null, validation);
+    return await getNumberWithPromptCore({ prompt, validation });
 }
 
 
-async function getNumberWithPromptCore (prompt, range, canCancel, validation){
-    canCancel = !(canCancel === false) || true;
+async function getNumberWithPromptCore (options){
+    validateArgumentTypes(options);
+    const { prompt, validation, range, canCancel } = options;
     let input = "";
     let valid = false;
     let failedMsg = `Sorry, that's not a valid number`;
@@ -36,7 +36,7 @@ async function getNumberWithPromptCore (prompt, range, canCancel, validation){
         //Validation check
         if(!isNaN(Number(input))){ //if input is a number
             valid = true;
-            if(typeof validation === "function"){
+            if(validation){
                 valid = false;
                 const result = validation(Number(input));
                 if(result === true) valid = true;
@@ -46,7 +46,7 @@ async function getNumberWithPromptCore (prompt, range, canCancel, validation){
                 valid = false;
                 validateRange(range);
                 if(!(input < range[0] || input > range[1])) valid = true;
-                failedMsg = `Sorry, that's not a valid number in the range ${range[0]}-${range[1]}`;
+                else failedMsg = `Sorry, that's not a valid number in the range ${range[0]}-${range[1]}`;
             }
         }
 
@@ -56,10 +56,20 @@ async function getNumberWithPromptCore (prompt, range, canCancel, validation){
     return input;
 }
 
+function validateArgumentTypes({ prompt, validation, range, canCancel }){
+    if(typeof prompt !== 'string' && prompt !== undefined)
+        return new Error('Type error: prompt must be of type string');
+    if(typeof validation !== 'function' && validation !== undefined)
+        return new Error('Type error: validation function must be of type function');
+    if(!Array.isArray(range) && range !== undefined)
+        return new Error('Type error: range must be of type array');
+    if(typeof canCancel !== 'boolean' && canCancel !== undefined)
+        return new Error('Type error: canCancel must be of type boolean');
+}
+
 function validateRange(range){
     let errMsg = "";
-    if(!Array.isArray(range)) errMsg = "Range must be an array";
-    else if(range.length !== 2) errMsg = "Range must be an array with 2 values";
+    if(range.length !== 2) errMsg = "Range must be an array with 2 values";
     else if(range[0] > range[1]) errMsg = "The first number in the range must be smaller than the second number";
     if(errMsg) throw new Error(errMsg);
     else return true;
