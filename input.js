@@ -7,25 +7,17 @@ function getInputWithPrompt(prompt) {
         output: process.stdout
     });
     return new Promise(resolve=>{
-        rl.question(prompt + ': ', input => {
+        rl.question(prompt + ': ', (input) => {
             rl.close();
             resolve(input);
         });
     });
 };
 
-async function getNumberWithPrompt(prompt, validation){
-    const options = typeof prompt === "object" ? prompt : null;
-    if(options){
-        return await getNumberWithPromptCore(options);
-    }
-    return await getNumberWithPromptCore({ prompt, validation });
-}
 
-
-async function getNumberWithPromptCore (options){
-    validateArgumentTypes(options);
-    const { prompt, validation, range, canCancel } = options;
+async function getNumberWithPrompt(prompt, options){
+    validateArgumentTypes(prompt, options);
+    const { validation, range, canCancel } = options;
     let input = "";
     let valid = false;
     let failedMsg = `Sorry, that's not a valid number`;
@@ -56,7 +48,7 @@ async function getNumberWithPromptCore (options){
     return input;
 }
 
-function validateArgumentTypes({ prompt, validation, range, canCancel }){
+function validateArgumentTypes(prompt, { validation, range, canCancel }){
     if(typeof prompt !== 'string' && prompt != null)
         return new Error('Type error: prompt must be of type string');
     if(typeof validation !== 'function' && validation != null)
