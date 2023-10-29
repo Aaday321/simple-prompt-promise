@@ -21,46 +21,46 @@ Usage
 
 ### Importing
 
-\`\`\`javascript
+```javascript
 const { getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt } = require('promptPromise');
-\`\`\`
+```
 
 ### Prompt for String Input with Validation
 
-\`\`\`javascript
+```javascript
 const name = await getInputWithPrompt('Enter your name: ', {
     validation: (input) => input.length >= 3 || "Name must be at least 3 characters long.",
     canCancel: true
 });
-\`\`\`
+```
 
 ### Get Raw Input without a Prompt
 
-\`\`\`javascript
+```javascript
 const rawInput = await getInput({
     validation: (input) => input.length > 0 || "Input cannot be empty.",
     canCancel: ['quit', 'exit']
 });
-\`\`\`
+```
 
 ### Prompt for a Number within a Range
 
-\`\`\`javascript
+```javascript
 const age = await getNumberWithPrompt('Enter your age: ', {
     range: [0, 150],
     canCancel: false
 });
-\`\`\`
+```
 
 ### Prompt for a Boolean Value
 
-\`\`\`javascript
+```javascript
 const isConfirmed = await getBooleanWithPrompt('Confirm? (y/n): ', {
     accept: ['yes', 'y'],
     reject: ['no', 'n'],
     canCancel: ['quit']
 });
-\`\`\`
+```
 
 API
 ---
