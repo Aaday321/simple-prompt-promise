@@ -1,23 +1,24 @@
 const readline = require('readline');
 
 async function getInputWithPrompt(prompt, options) {
-    const { validation, canCancel } = options;
-    return await getInputShared({ prompt, validation, canCancel });
+    expectType({prompt, type: 'string'});
+    return await getInput_SharedLogic( prompt, options);
 }
 
 async function getInput(options) {
     const { validation, canCancel } = options;
-    return await getInputShared({ validation, canCancel });
+    expectType({validation, type: 'function'});
+    expectType({canCancel, type: 'boolean'});
+    return await getInput_SharedLogic('', options);
 }
 
-async function getInputShared(options) {
-    const { validation, canCancel, prompt } = options;
+async function getInput_SharedLogic(prompt, { validation, canCancel }) {
     let valid = false;
     let failedMsg = 'invalid input';
     let input = '';
-
+    canCancel = canCancel ?? true;
     while(!valid) {
-        input = await getInputCore(prompt || '');
+        input = await getInputCore(prompt);
         input = input.trim();
         if (canCancel && userDidCancel(input, canCancel)) return 'cancelled';
         if (validation) {
