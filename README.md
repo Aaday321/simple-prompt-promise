@@ -6,7 +6,7 @@ A simple and flexible npm package for prompting user input from the command line
 Installation
 ------------
 
-npm install simple-prompt-promise
+```npm install simple-prompt-promise```
 
 Features
 --------
