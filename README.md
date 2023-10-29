@@ -58,8 +58,8 @@ const age = await getNumberWithPrompt('Enter your age: ', {
 const isConfirmed = await getBooleanWithPrompt('Confirm? (y/n): ', {
     accept: ['yes', 'y'],
     reject: ['no', 'n'],
-    disableDefault: true,
-    canCancel: ['quit']
+    canCancel: ['quit'],
+    disableDefault: true
 });
 ```
 
