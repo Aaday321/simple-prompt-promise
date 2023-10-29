@@ -105,7 +105,6 @@ async function getBooleanWithPrompt(prompt, options){
         reject = ['n', 'no', 'false', 'N', 'No', 'False', ...reject];
     }
 
-    
     if(!matchCase){
         accept = accept.map(i=>i.toLowerCase());
         reject = reject.map(i=>i.toLowerCase());
