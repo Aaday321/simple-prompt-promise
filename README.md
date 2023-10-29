@@ -1,28 +1,26 @@
-Simple Prompt Prompise
-=============
+# Simple Prompt Promise
 
 A simple and flexible npm package for prompting user input from the command line.
 
-Installation
-------------
+## Installation
 
-```npm install simple-prompt-promise```
+\`\`\`bash
+npm install simple-prompt-promise
+\`\`\`
 
-Features
---------
+## Features
 
-- Type Safety: Validation based on expected data type.
-- Cancel Options: Capability to cancel input with pre-defined keywords.
-- Flexible Validation: Built-in validation functions or custom validation rules.
-- Multiple Input Types: Prompt for strings, numbers, and booleans with customization.
+- **Type Safety**: Validation based on expected data type.
+- **Cancel Options**: Capability to cancel input with pre-defined keywords.
+- **Flexible Validation**: Built-in validation functions or custom validation rules.
+- **Multiple Input Types**: Prompt for strings, numbers, and booleans with customization.
 
-Usage
------
+## Usage
 
 ### Importing
 
 ```javascript
-const { getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt } = require('promptPromise');
+const { getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt } = require('simple-prompt-promise');
 ```
 
 ### Prompt for String Input with Validation
@@ -47,6 +45,7 @@ const rawInput = await getInput({
 
 ```javascript
 const age = await getNumberWithPrompt('Enter your age: ', {
+    validation: (input) => typeof input === 'number',
     range: [0, 150],
     canCancel: false
 });
@@ -59,29 +58,30 @@ const isConfirmed = await getBooleanWithPrompt('Confirm? (y/n): ', {
     accept: ['yes', 'y'],
     reject: ['no', 'n'],
     canCancel: ['quit'],
-    disableDefault: true
+    disableDefault: true,
+    matchCase: false
 });
 ```
 
-API
----
+## API
 
 ### Functions
 
-- getInputWithPrompt(prompt, options)
-- getInput(options)
-- getNumberWithPrompt(prompt, options)
-- getBooleanWithPrompt(prompt, options)
+- `getInputWithPrompt(prompt, options)`
+- `getInput(options)`
+- `getNumberWithPrompt(prompt, options)`
+- `getBooleanWithPrompt(prompt, options)`
 
-#### Options
+### Options
 
-- validation: A function that returns true if the input is valid or a custom error message.
-- canCancel: A boolean or array of strings that will cancel the prompt.
-- range: An array of two numbers defining the acceptable range (for getNumberWithPrompt).
-- accept: An array of strings considered as 'true' (for getBooleanWithPrompt).
-- reject: An array of strings considered as 'false' (for getBooleanWithPrompt).
+- `validation`: A function that returns true if the input is valid or a custom error message.
+- `canCancel`: A boolean or an array of strings that will cancel the prompt.
+- `range`: An array of two numbers defining the acceptable range (for getNumberWithPrompt).
+- `accept`: An array of strings considered as 'true' (for getBooleanWithPrompt).
+- `reject`: An array of strings considered as 'false' (for getBooleanWithPrompt).
+- `disableDefault`: A boolean to disable default accept/reject values (for getBooleanWithPrompt).
+- `matchCase`: A boolean to specify whether to match the case for boolean prompts (for getBooleanWithPrompt).
 
-Contributing
-------------
+## Contributing
 
 Feel free to open issues or PRs!
