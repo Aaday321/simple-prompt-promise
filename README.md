@@ -1,4 +1,4 @@
-promptPromise
+Simple Prompt Prompise
 =============
 
 A simple and flexible npm package for prompting user input from the command line.
