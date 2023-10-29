@@ -1,6 +1,5 @@
 const readline = require('readline');
 
-
 async function getInputWithPrompt(prompt, options) {
     const { validation, canCancel } = options;
     return await getInputShared({ prompt, validation, canCancel });
@@ -10,7 +9,6 @@ async function getInput(options) {
     const { validation, canCancel } = options;
     return await getInputShared({ validation, canCancel });
 }
-
 
 async function getInputShared(options) {
     const { validation, canCancel, prompt } = options;
