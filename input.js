@@ -8,7 +8,7 @@ async function getInputWithPrompt(prompt, options) {
 async function getInput(options) {
     const { validation, canCancel } = options;
     expectType({validation, type: 'function'});
-    expectType({canCancel, type: 'boolean'});
+    expectType({canCancel, type: ['boolean', 'array']});
     return await getInput_SharedLogic('', options);
 }
 
