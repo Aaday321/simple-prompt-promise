@@ -2,7 +2,7 @@ const readline = require('readline');
 
 async function getInputWithPrompt(prompt, options) {
     expectType({prompt, type: 'string'});
-    return await getInput_SharedLogic( prompt, options);
+    return await getInput_SharedLogic(prompt, options);
 }
 
 async function getInput(options) {
