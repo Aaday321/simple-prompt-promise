@@ -1,50 +1,36 @@
 const readline = require('readline');
 
-async function getInputWithPrompt(prompt, options){
+
+async function getInputWithPrompt(prompt, options) {
     const { validation, canCancel } = options;
-    expectType({prompt, type: 'string'});
-    expectType({validation, type: 'function'});
-    expectType({canCancel, type: ['boolean', 'array']});
-    let valid = false;
-    let failedMsg = 'invalid input';
-    let input = '';
-    
-    while(!valid) {
-        input = await getInputCore(prompt);
-        input = input.trim();
-        if(canCancel) if(userDidCancel(input, canCancel)) return 'cancelled';
-        if(validation){
-            const result = validation(input);
-            if(result === true) valid = true;
-            else if(typeof result === 'string') failedMsg = result;
-            else if(typeof result !== 'boolean' || typeof result !== 'string')
-                throw new Error('validation function must return true or false or a string');
-        }
-        console.log(failedMsg);
-    }
+    return await getInputShared({ prompt, validation, canCancel });
 }
 
-async function getInput(options){
+async function getInput(options) {
     const { validation, canCancel } = options;
-    expectType({validation, type: 'function'});
-    expectType({canCancel, type: ['boolean', 'array']});
+    return await getInputShared({ validation, canCancel });
+}
+
+
+async function getInputShared(options) {
+    const { validation, canCancel, prompt } = options;
     let valid = false;
     let failedMsg = 'invalid input';
     let input = '';
 
     while(!valid) {
-        input = await getInputCore('');
+        input = await getInputCore(prompt || '');
         input = input.trim();
-        if(canCancel) if(userDidCancel(input, canCancel)) return 'cancelled';
-        if(validation){
+        if (canCancel && userDidCancel(input, canCancel)) return 'cancelled';
+        if (validation) {
             const result = validation(input);
-            if(result === true) valid = true;
-            else if(typeof result === 'string') failedMsg = result;
-            else if(typeof result !== 'boolean' || typeof result !== 'string')
-                throw new Error('validation function must return true or false or a string');
+            if (result === true) valid = true;
+            else if (typeof result === 'string') failedMsg = result;
+            else throw new Error('validation function must return true or false or a string');
         }
         console.log(failedMsg);
     }
+    return input;
 }
 
 function getInputCore(prompt) {
@@ -64,7 +50,6 @@ function getInputCore(prompt) {
 
 async function getNumberWithPrompt(prompt, options){
     const { validation, range, canCancel } = options;
-    
     expectType({prompt, type: 'string'});
     expectType({validation, type: 'function'});
     expectType({range, type: 'array'});
@@ -77,20 +62,21 @@ async function getNumberWithPrompt(prompt, options){
     while(!valid){
         input = await getInputCore(prompt);
         input = input.trim();
-        if(canCancel) if(userDidCancel(input, canCancel)) return 'cancelled';
+        if(canCancel && userDidCancel(input, canCancel)) return 'cancelled';
+        const inputToNumber = Number(input);
 
         //Validation check
-        if(!isNaN(Number(input))){ //if input is a number
+        if(!isNaN(inputToNumber)){ //if input is a number
             valid = true;
             if(validation){
                 valid = false;
-                const result = validation(Number(input));
+                const result = validation(inputToNumber);
                 if(result === true) valid = true;
                 else if(typeof result === 'string') failedMsg = result;
             }
             if(valid && range) {
                 valid = false;
-                if(!(input <= range[0] || input >= range[1])) valid = true;
+                if(inputToNumber >= range[0] && inputToNumber <= range[1]) valid = true;
                 else failedMsg = `Sorry, that's not a valid number in the range ${range[0]} to ${range[1]}`;
             }
         }
@@ -98,7 +84,7 @@ async function getNumberWithPrompt(prompt, options){
         if(!valid) console.log(failedMsg);
     }
 
-    return input;
+    return Number(input);
 }
 
 async function getBooleanWithPrompt(prompt, options){
@@ -132,9 +118,9 @@ async function getBooleanWithPrompt(prompt, options){
         input = input.trim();
         if(!matchCase) {
             input = input.toLowerCase();
-            if(typeof canCancel === 'array') canCancel = canCancel.map(i=>i.toLowerCase);
+            if(typeof canCancel === 'array') canCancel = canCancel.map(i=>i.toLowerCase());
         }
-        if(canCancel) if(userDidCancel(input, canCancel)) return 'cancelled';
+        if(canCancel && userDidCancel(input, canCancel)) return 'cancelled';
 
         if(accept.includes(input)){
             valid = true;
@@ -152,27 +138,30 @@ async function getBooleanWithPrompt(prompt, options){
     return response;
 }
 
+function getUnknownKey(obj, knownKeys){
+    let keys =  Object.keys(obj);
+    keys = keys.filter(key => !knownKeys.includes(key));
+    return keys[0];
+}
+
 function expectType(params){
-    const keys = Object.keys(params);
-    const value = params[keys[0]];
-    const arg2 = params[keys[1]];
-    const types = typeof arg2 === 'string' ? [arg2] : arg2;
-    const allowNullAndUndefined = true;
-    if(keys.length === 3) allowNullAndUndefined = params[keys[3]];
-    const argName = Object.keys(params)[0];
+    const types = typeof params.type === 'string' ? [params.type] : params.type;
+    let allowNullAndUndefined = params.allowNullAndUndefined ?? true;
+    const argName = getUnknownKey(params, ['type', 'allowNullAndUndefined']);
+    const value = params[argName];
     let err;
     for(let type of types){
-        if(!(allowNullAndUndefined && value == null)){ //if it cant be and it isn't
-            if(type === 'array') {
-                if(Array.isArray(value)) return;
-                else err = new Error(`Type error: ${argName} must be ${
-                    types.length > 1 ? 'an array or ' + types.filter(i=>i!='array').join(' or ') : 'an array'
-                }`); 
-            } else if(typeof value === type) return;  
-            else err = new Error(`Type error: ${argName} must be of type ${
-                types.length > 1 ? types.join(' or ') : type
-            }`);  
-        }
+        if(allowNullAndUndefined && value == null) return;
+        if(type === 'array') {
+            if(Array.isArray(value)) return;
+            else err = new Error(`Type error: ${argName} must be ${
+                types.length > 1 ? 'an array or ' + types.filter(i=>i!='array').join(' or ') : 'an array'
+            }`); 
+        } else if(typeof value === type) return;  
+        else err = new Error(`Type error: ${argName} must be of type ${
+            types.length > 1 ? types.join(' or ') : type
+        }`);  
+        
     }
     if(err) throw err;
 }
@@ -186,7 +175,7 @@ function validateRange(range){
 }
 
 function userDidCancel(cancel, input){
-    if(typeof cancel === 'boolean') return !(input === 'cancel' || input === 'exit');
+    if(typeof cancel === 'boolean') return input === 'cancel' || input === 'exit';
     else if(Array.isArray(cancel)) return cancel.includes(input);
 }
 
