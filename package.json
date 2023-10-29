@@ -1,0 +1,25 @@
+{
+  "name": "prompt-promise",
+  "version": "1.0.0",
+  "description": "A simple and flexible npm package for prompting user input from the command line.",
+  "main": "input.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aaday321/promptPromise.git"
+  },
+  "keywords": [
+    "input",
+    "prompt",
+    "user",
+    "input"
+  ],
+  "author": "Whatade",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aaday321/promptPromise/issues"
+  },
+  "homepage": "https://github.com/Aaday321/promptPromise#readme"
+}
