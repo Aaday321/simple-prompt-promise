@@ -44,8 +44,8 @@ const rawInput = await getInput({
 ### Prompt for a Number within a Range
 
 ```javascript
-const age = await getNumberWithPrompt('Enter your age: ', {
-    validation: (input) => typeof input === 'number',
+const age = await getNumberWithPrompt('Enter an even number between 0-150: ', {
+    validation: (input) => input % 2 === 0 || "Input must be an even number",
     range: [0, 150],
     canCancel: false
 });
@@ -55,8 +55,8 @@ const age = await getNumberWithPrompt('Enter your age: ', {
 
 ```javascript
 const isConfirmed = await getBooleanWithPrompt('Confirm? (y/n): ', {
-    accept: ['yes', 'y'],
-    reject: ['no', 'n'],
+    accept: ['fasho', 'yessir', 'on my momma'],
+    reject: ['nah', 'it's bad', 'ain't no way'],
     canCancel: ['quit'],
     disableDefault: true,
     matchCase: false
