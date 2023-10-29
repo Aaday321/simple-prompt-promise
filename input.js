@@ -17,8 +17,8 @@ async function getInputWithPrompt(prompt, options){
             const result = validation(input);
             if(result === true) valid = true;
             else if(typeof result === 'string') failedMsg = result;
-            else if(typeof result !== 'boolean')
-                throw new Error('validation function must return true or false');
+            else if(typeof result !== 'boolean' || typeof result !== 'string')
+                throw new Error('validation function must return true or false or a string');
         }
         console.log(failedMsg);
     }
@@ -40,8 +40,8 @@ async function getInput(options){
             const result = validation(input);
             if(result === true) valid = true;
             else if(typeof result === 'string') failedMsg = result;
-            else if(typeof result !== 'boolean')
-                throw new Error('validation function must return true or false');
+            else if(typeof result !== 'boolean' || typeof result !== 'string')
+                throw new Error('validation function must return true or false or a string');
         }
         console.log(failedMsg);
     }
