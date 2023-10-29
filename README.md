@@ -56,7 +56,7 @@ const age = await getNumberWithPrompt('Enter an even number between 0-150: ', {
 ```javascript
 const isConfirmed = await getBooleanWithPrompt('Confirm? (y/n): ', {
     accept: ['fasho', 'yessir', 'on my momma'],
-    reject: ['nah', 'it's bad', 'ain't no way'],
+    reject: ['nah', 'it's bad', 'ain\'t no way'],
     canCancel: ['quit'],
     disableDefault: true,
     matchCase: false
