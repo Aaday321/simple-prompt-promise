@@ -44,7 +44,7 @@ const rawInput = await getInput({
 ### Prompt for a Number within a Range
 
 ```javascript
-const age = await getNumberWithPrompt('Enter an even number between 0-150: ', {
+const evenNumber = await getNumberWithPrompt('Enter an even number between 0-150: ', {
     validation: (input) => input % 2 === 0 || "Input must be an even number",
     range: [0, 150],
     canCancel: false
