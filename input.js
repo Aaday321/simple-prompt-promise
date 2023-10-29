@@ -6,13 +6,13 @@ async function getInputWithPrompt(prompt, options) {
 }
 
 async function getInput(options) {
-    const { validation, canCancel } = options;
-    expectType({validation, type: 'function'});
-    expectType({canCancel, type: ['boolean', 'array']});
     return await getInput_SharedLogic('', options);
 }
 
 async function getInput_SharedLogic(prompt, { validation, canCancel }) {
+    expectType({validation, type: 'function'});
+    expectType({canCancel, type: ['boolean', 'array']});
+
     let valid = false;
     let failedMsg = 'invalid input';
     let input = '';
