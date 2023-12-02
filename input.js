@@ -48,7 +48,7 @@ function getInputCore(prompt) {
 };
 
 async function getNumberWithPrompt(prompt, options){
-    const { validation, range, canCancel } = options;
+    const { validation, range, canCancel } = options || {};
     expectType({prompt, type: 'string'});
     expectType({validation, type: 'function'});
     expectType({range, type: 'array'});
