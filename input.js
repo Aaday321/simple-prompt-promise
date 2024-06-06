@@ -9,9 +9,12 @@ async function getInput(options) {
     return await getInput_SharedLogic('', options);
 }
 
-async function getInput_SharedLogic(prompt, { validation, canCancel }) {
-    expectType({validation, type: 'function'});
-    expectType({canCancel, type: ['boolean', 'array']});
+async function getInput_SharedLogic(prompt, options) {
+    let validation = options?.validation;
+    let canCancel = options?.canCancel;
+
+    if (validation) expectType({validation, type: 'function'});
+    if (canCancel)  expectType({canCancel, type: ['boolean', 'array']});
 
     let valid = false;
     let failedMsg = 'invalid input';
@@ -26,8 +29,7 @@ async function getInput_SharedLogic(prompt, { validation, canCancel }) {
             if (result === true) valid = true;
             else if (typeof result === 'string') failedMsg = result;
             else throw new Error('validation function must return true or false or a string');
-        }
-        console.log(failedMsg);
+        } else valid = true
     }
     return input;
 }
