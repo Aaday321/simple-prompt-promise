@@ -103,9 +103,14 @@ async function getBooleanWithPrompt(prompt, options){
     let valid = false;
     let response;
 
+    const acceptDefault = ['y', 'yes', 'true', 'Y', 'Yes', 'True']
+    const rejectDefault = ['n', 'no', 'false', 'N', 'No', 'False']
+
     if(!disableDefault){
-        accept = ['y', 'yes', 'true', 'Y', 'Yes', 'True', ...accept];
-        reject = ['n', 'no', 'false', 'N', 'No', 'False', ...reject];
+        if(accept) accept = [...acceptDefault, ...accept];
+        else accept = acceptDefault;
+        if (reject) reject = [...rejectDefault, ...reject];
+        else reject = rejectDefault;
     }
 
     if(!matchCase){
