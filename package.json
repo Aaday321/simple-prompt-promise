@@ -3,10 +3,10 @@
   "version": "1.0.5",
   "type": "module",
   "description": "A simple and flexible npm package for prompting user input from the command line.",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --no-warnings --loader ts-node/esm index.ts",
+    "dev": "node --no-warnings --loader ts-node/esm src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
