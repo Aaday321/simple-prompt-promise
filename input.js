@@ -179,7 +179,7 @@ function validateRange(range){
     else return true;
 }
 
-function userDidCancel(cancel, input){
+function userDidCancel(input, cancel){
     if(typeof cancel === 'boolean') return input === 'cancel' || input === 'exit';
     else if(Array.isArray(cancel)) return cancel.includes(input);
 }
