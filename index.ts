@@ -1,15 +1,16 @@
-const readline = require('readline');
+import * as readline from "node:readline";
+import {BooleanOptions, Cancel, ExpectTypeParams, NumberOptions, Options, RangeArray} from "./types.js";
 
-async function getInputWithPrompt(prompt, options) {
+async function getInputWithPrompt(prompt: string, options?: Options) {
     expectType({prompt, type: 'string'});
     return await getInput_SharedLogic(prompt, options);
 }
 
-async function getInput(options) {
+async function getInput(options: Options) {
     return await getInput_SharedLogic('', options);
 }
 
-async function getInput_SharedLogic(prompt, options) {
+async function getInput_SharedLogic(prompt: string, options?: Options) {
     let validation = options?.validation;
     let canCancel = options?.canCancel;
 
@@ -34,14 +35,14 @@ async function getInput_SharedLogic(prompt, options) {
     return input;
 }
 
-function getInputCore(prompt) {
+function getInputCore(prompt: string) {
       
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
 
-    return new Promise(resolve=>{
+    return new Promise<string>(resolve=>{
         rl.question(prompt, (input) => {
             rl.close();
             resolve(input);
@@ -49,7 +50,7 @@ function getInputCore(prompt) {
     });
 };
 
-async function getNumberWithPrompt(prompt, options){
+async function getNumberWithPrompt(prompt: string, options: NumberOptions) {
     const { validation, range, canCancel } = options || {};
     expectType({prompt, type: 'string'});
     expectType({validation, type: 'function'});
@@ -88,7 +89,7 @@ async function getNumberWithPrompt(prompt, options){
     return Number(input);
 }
 
-async function getBooleanWithPrompt(prompt, options){
+async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
     let { accept, reject, disableDefault, matchCase, rejectMsg, canCancel } = options || {};
     rejectMsg = rejectMsg ?? 'invalid boolean input';
     
@@ -123,7 +124,7 @@ async function getBooleanWithPrompt(prompt, options){
         input = input.trim();
         if(!matchCase) {
             input = input.toLowerCase();
-            if(typeof canCancel === 'array') canCancel = canCancel.map(i=>i.toLowerCase());
+            if(Array.isArray(canCancel)) canCancel = canCancel.map(i=>i.toLowerCase());
         }
         if(canCancel && userDidCancel(input, canCancel)) return 'cancelled';
 
@@ -143,13 +144,13 @@ async function getBooleanWithPrompt(prompt, options){
     return response;
 }
 
-function getUnknownKey(obj, knownKeys){
+function getUnknownKey(obj:ExpectTypeParams, knownKeys: string[]){
     let keys =  Object.keys(obj);
     keys = keys.filter(key => !knownKeys.includes(key));
     return keys[0];
 }
 
-function expectType(params){
+function expectType(params: ExpectTypeParams) {
     const types = typeof params.type === 'string' ? [params.type] : params.type;
     let allowNullAndUndefined = params.allowNullAndUndefined ?? true;
     const argName = getUnknownKey(params, ['type', 'allowNullAndUndefined']);
@@ -171,7 +172,7 @@ function expectType(params){
     if(err) throw err;
 }
 
-function validateRange(range){
+function validateRange(range: RangeArray){
     let errMsg = "";
     if(range.length !== 2) errMsg = "Range must be an array with 2 values";
     else if(range[0] > range[1]) errMsg = "The first number in the range must be smaller than the second number";
@@ -179,11 +180,12 @@ function validateRange(range){
     else return true;
 }
 
-function userDidCancel(cancel, input){
+function userDidCancel(input: string, cancel: Cancel){
     if(typeof cancel === 'boolean') return input === 'cancel' || input === 'exit';
     else if(Array.isArray(cancel)) return cancel.includes(input);
+    else return false;
 }
 
-module.exports = {
+export {
     getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt
 };

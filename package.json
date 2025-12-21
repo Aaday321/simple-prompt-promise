@@ -1,10 +1,14 @@
 {
   "name": "simple-prompt-promise",
   "version": "1.0.5",
+  "type": "module",
   "description": "A simple and flexible npm package for prompting user input from the command line.",
-  "main": "input.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --no-warnings --loader ts-node/esm index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +25,10 @@
   "bugs": {
     "url": "https://github.com/Aaday321/promptPromise/issues"
   },
-  "homepage": "https://github.com/Aaday321/promptPromise#readme"
+  "homepage": "https://github.com/Aaday321/promptPromise#readme",
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }
