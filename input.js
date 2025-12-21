@@ -123,7 +123,7 @@ async function getBooleanWithPrompt(prompt, options){
         input = input.trim();
         if(!matchCase) {
             input = input.toLowerCase();
-            if(typeof canCancel === 'array') canCancel = canCancel.map(i=>i.toLowerCase());
+            if(Array.isArray(canCancel)) canCancel = canCancel.map(i=>i.toLowerCase());
         }
         if(canCancel && userDidCancel(input, canCancel)) return 'cancelled';
 
