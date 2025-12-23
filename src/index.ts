@@ -85,7 +85,13 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
     const acceptDefault = ['y', 'yes', 'true', 'Y', 'Yes', 'True']
     const rejectDefault = ['n', 'no', 'false', 'N', 'No', 'False']
 
-    if(!disableDefault){
+    if(disableDefault){
+        if(!Array.isArray(accept) || !Array.isArray(reject)){
+            const msg = "If you use disableDefault, you must pass explicit accept and reject conditions"
+            const alsoMsg = "If you want to disable acceptance or rejection then you can pass an empty array to indicate explicit intentionality"
+            throw new Error(msg +  "\n" + alsoMsg);
+        }
+    } else {
         if(accept) accept = [...acceptDefault, ...accept];
         else accept = acceptDefault;
         if (reject) reject = [...rejectDefault, ...reject];
@@ -127,4 +133,4 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
 
 export {
     getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt
-};
+};=
