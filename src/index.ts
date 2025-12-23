@@ -1,6 +1,10 @@
-import * as readline from "node:readline";
-import {BooleanOptions, Cancel, ExpectTypeParams, NumberOptions, Options, RangeArray} from "./types.js";
+import {expectType, getInput_SharedLogic, getInputCore, userDidCancel, validateRange} from "./internals.js";
 
+export type Cancel = boolean | string[]
+export interface Options {
+    validation?: (value: string | number) => boolean;
+    canCancel?: Cancel;
+}
 async function getInputWithPrompt(prompt: string, options?: Options) {
     expectType({prompt, type: 'string'});
     return await getInput_SharedLogic(prompt, options);
@@ -10,46 +14,10 @@ async function getInput(options: Options) {
     return await getInput_SharedLogic('', options);
 }
 
-async function getInput_SharedLogic(prompt: string, options?: Options) {
-    let validation = options?.validation;
-    let canCancel = options?.canCancel;
-
-    if (validation) expectType({validation, type: 'function'});
-    if (canCancel)  expectType({canCancel, type: ['boolean', 'array']});
-
-    let valid = false;
-    let failedMsg = 'invalid input';
-    let input = '';
-    canCancel = canCancel ?? true;
-    while(!valid) {
-        input = await getInputCore(prompt);
-        input = input.trim();
-        if (canCancel && userDidCancel(input, canCancel)) return 'cancelled';
-        if (validation) {
-            const result = validation(input);
-            if (result === true) valid = true;
-            else if (typeof result === 'string') failedMsg = result;
-            else throw new Error('validation function must return true or false or a string');
-        } else valid = true
-    }
-    return input;
+export type RangeArray = [number, number];
+export interface NumberOptions extends Options {
+    range?: RangeArray;
 }
-
-function getInputCore(prompt: string) {
-      
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    return new Promise<string>(resolve=>{
-        rl.question(prompt, (input) => {
-            rl.close();
-            resolve(input);
-        });
-    });
-};
-
 async function getNumberWithPrompt(prompt: string, options: NumberOptions) {
     const { validation, range, canCancel } = options || {};
     expectType({prompt, type: 'string'});
@@ -89,6 +57,16 @@ async function getNumberWithPrompt(prompt: string, options: NumberOptions) {
     return Number(input);
 }
 
+
+//The type information should say that if we disable default
+//Then we have to pass BOTH accept and reject conditions
+export interface BooleanOptions extends Options {
+    accept?: string[];
+    reject?: string[];
+    disableDefault?: boolean;
+    matchCase?: boolean;
+    rejectMsg?: string;
+}
 async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
     let { accept, reject, disableDefault, matchCase, rejectMsg, canCancel } = options || {};
     rejectMsg = rejectMsg ?? 'invalid boolean input';
@@ -114,8 +92,11 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
         else reject = rejectDefault;
     }
 
-    if(!matchCase){
+    if(!matchCase && accept){
         accept = accept.map(i=>i.toLowerCase());
+    }
+
+    if(!matchCase && reject){
         reject = reject.map(i=>i.toLowerCase());
     }
 
@@ -128,11 +109,11 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
         }
         if(canCancel && userDidCancel(input, canCancel)) return 'cancelled';
 
-        if(accept.includes(input)){
+        if(accept?.includes(input)){
             valid = true;
             response = true;
             break;
-        } else if(reject.includes(input)){
+        } else if(reject?.includes(input)){
             valid = true;
             response = false;
             break;
@@ -142,12 +123,6 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
     }
 
     return response;
-}
-
-function userDidCancel(input: string, cancel: Cancel){
-    if(typeof cancel === 'boolean') return input === 'cancel' || input === 'exit';
-    else if(Array.isArray(cancel)) return cancel.includes(input);
-    else return false;
 }
 
 export {
