@@ -133,4 +133,4 @@ async function getBooleanWithPrompt(prompt: string, options: BooleanOptions){
 
 export {
     getInputWithPrompt, getInput, getNumberWithPrompt, getBooleanWithPrompt
-};=
+};
